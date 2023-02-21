@@ -42,7 +42,7 @@ namespace APIClient
             {
                 var client = new HttpClient();
 
-                var url = $"https://api.lyrics.ovh/v1/{artist}/{title}";
+                var url = $"https://private-anon-75d828972a-lyricsovh.apiary-mock.com/v1/{artist}/{title}";
 
                 var responseBodyAsStream = await client.GetStreamAsync(url);
 
@@ -52,11 +52,9 @@ namespace APIClient
                 table.AddRow(artist, title, lyricsObj.SongLyrics);
                 table.Write();
             }
-            catch (Exception e)
+            catch (HttpRequestException)
             {
                 Console.WriteLine("Something went wrong. Please try again.");
-                Console.WriteLine(e.Message);
-                return;
             }
 
         }
