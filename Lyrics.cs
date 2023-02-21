@@ -10,10 +10,5 @@ namespace APIClient
     {
         [JsonPropertyName("lyrics")]
         public string SongLyrics { get; set; }
-
-        public static implicit operator Lyrics(List<Lyrics> v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
