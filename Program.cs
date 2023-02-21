@@ -19,7 +19,7 @@ namespace APIClient
             {
                 var artist = PromptForInput("What artist do you want to search for?");
                 var title = PromptForInput($"What song, from {artist} do you want to search for?");
-                Console.WriteLine($"Searching for {title} by {artist}...");
+                Console.WriteLine($"Searching for {title} by {artist}...\n");
 
                 await SearchLyrics(artist, title);
 
@@ -47,12 +47,13 @@ namespace APIClient
 
                 var responseBodyAsStream = await client.GetStreamAsync(url);
 
-                Lyrics lyricsObj = await JsonSerializer.DeserializeAsync<Lyrics>(responseBodyAsStream);
+                var lyricsObj = await JsonSerializer.DeserializeAsync<Lyrics>(responseBodyAsStream);
 
                 //Table formatting
-                var table = new ConsoleTable("Artist", "Title", "Lyrics");
-                table.AddRow(artist, title, lyricsObj.SongLyrics);
-                table.Write();
+                // var table = new ConsoleTable("Artist", "Title", "Lyrics");
+                // table.AddRow(artist, title, lyricsObj.SongLyrics);
+                // table.Write();
+                Console.WriteLine(lyricsObj.SongLyrics);
             }
             catch (HttpRequestException)
             {
