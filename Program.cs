@@ -40,6 +40,7 @@ namespace APIClient
         {
             try
             {
+                //instantiating the HttpClient
                 var client = new HttpClient();
                 //the mock server
                 var url = $"https://private-anon-75d828972a-lyricsovh.apiary-mock.com/v1/{artist}/{title}";
@@ -48,6 +49,7 @@ namespace APIClient
 
                 Lyrics lyricsObj = await JsonSerializer.DeserializeAsync<Lyrics>(responseBodyAsStream);
 
+                //Table formatting
                 var table = new ConsoleTable("Artist", "Title", "Lyrics");
                 table.AddRow(artist, title, lyricsObj.SongLyrics);
                 table.Write();
