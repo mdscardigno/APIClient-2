@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 using ConsoleTables;
@@ -17,10 +18,13 @@ namespace APIClient
             while (keepGoing)
             {
                 var artist = PromptForInput("What artist do you want to search for?");
-                var song = PromptForInput($"What song, from {artist} do you want to search for?");
-                Console.WriteLine($"Searching for {song} by {artist}...");
+                var title = PromptForInput($"What song, from {artist} do you want to search for?");
+                Console.WriteLine($"Searching for {title} by {artist}...");
 
-                await SearchLyrics(artist, song);
+                await SearchLyrics(artist, title);
+
+                var input = PromptForInput("Would you like to search for another song? (y/n)").ToUpper();
+                keepGoing = input == "Y" ? true : false;
 
             }
         }
@@ -32,18 +36,29 @@ namespace APIClient
             return Console.ReadLine();
         }
         //setting up the API call
-        static async Task SearchLyrics(string artist, string song)
+        static async Task SearchLyrics(string artist, string title)
         {
-            var client = new HttpClient();
+            try
+            {
+                var client = new HttpClient();
 
-            var url = $"https://api.lyrics.ovh/v1/{artist}/{song}";
+                var url = $"https://api.lyrics.ovh/v1/{artist}/{title}";
 
-            var responseBodyAsStream = await client.GetStreamAsync(url);
+                var responseBodyAsStream = await client.GetStreamAsync(url);
 
-            //creating a Lyrics object
-            Lyrics lyricsObj = await JsonSerializer.DeserializeAsync<Lyrics>(responseBodyAsStream);
+                Lyrics lyricsObj = await JsonSerializer.DeserializeAsync<Lyrics>(responseBodyAsStream);
 
-            var table = new ConsoleTable("Artist", "Song", "Lyrics");
+                var table = new ConsoleTable("Artist", "Title", "Lyrics");
+                table.AddRow(artist, title, lyricsObj.SongLyrics);
+                table.Write();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Something went wrong. Please try again.");
+                Console.WriteLine(e.Message);
+                return;
+            }
+
         }
     }
 }
